@@ -3,14 +3,15 @@
 
 class Calculator {
   constructor (calculatorId) {
-    let el = $(`#${calculatorId}`)
-    if (!el) {
+    let $el = $(`#${calculatorId}`)
+    if (!$el) {
       window.alert('Not a valid calculator ID. Try again.')
       return null
     }
-    this.id = calculatorId
+    this._$el = $el
+    this._$elId = calculatorId
 
-    el.innerHTML = this._renderHTML()
+    this._$el.html(this._renderHTML())
     this._numOperArray = []
     this._addEvents()
   }
@@ -46,12 +47,12 @@ class Calculator {
     return
   }
   updateTextField () {
-    $('#display').html(this.value())
+    $('#' + this._$elId + ' .display').html(this.value())
   }
 
   backspace () {
     this._numOperArray.pop()
-    $('#display').html(this._numOperArray)
+    $('#' + this._$elId + ' .display').html(this._numOperArray)
   }
 
   clearAll () {
@@ -60,7 +61,7 @@ class Calculator {
   }
 
   displayTotal () {
-    $('#display').html(this.value())
+    $('#' + this._$elId + ' .display').html(this.value())
   }
 
   value () {
@@ -108,16 +109,12 @@ class Calculator {
   // ---------------------------------------------------------------------------
 
   _addEvents () {
-    let id = this.id
     let thisBtn = this
-    $('#' + id + ' .btn').click(this.press.bind(thisBtn.inputBtn))
+    $('#' + this._$elId + ' .btn').click(this.press.bind(thisBtn.inputBtn))
   }
   _renderHTML () {
-    $('body').append(this._createHTML())
-  }
-  _createHTML () {
     return `<div class="output-row">
-      <div class="answer-field" id="display"></div>
+      <div class="answer-field display"></div>
       </div>
       <button class="btn" inputBtn="7">7</button>
       <button class="btn" inputBtn="8">8</button>
