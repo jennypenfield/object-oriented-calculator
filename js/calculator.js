@@ -3,14 +3,14 @@
 
 class Calculator {
   constructor (calculatorId) {
-    // let el = $('#' + calculatorId + '"')
-    // if (!el) {
-    //   window.alert('Not a valid calculator ID. Try again.')
-    //   return null
-    // }
+    let el = $(`#${calculatorId}`)
+    if (!el) {
+      window.alert('Not a valid calculator ID. Try again.')
+      return null
+    }
     this.id = calculatorId
 
-    this._renderHTML(this.id)
+    el.innerHTML = this._renderHTML()
     this._numOperArray = []
     this._addEvents()
   }
@@ -112,12 +112,11 @@ class Calculator {
     let thisBtn = this
     $('#' + id + ' .btn').click(this.press.bind(thisBtn.inputBtn))
   }
-  _renderHTML (id) {
-    $('body').append(this._createHTML(id))
+  _renderHTML () {
+    $('body').append(this._createHTML())
   }
-  _createHTML (id) {
-    return `<div id="${id}">
-      <div class="output-row">
+  _createHTML () {
+    return `<div class="output-row">
       <div class="answer-field" id="display"></div>
       </div>
       <button class="btn" inputBtn="7">7</button>
@@ -141,8 +140,7 @@ class Calculator {
       <button class="btn lighter-green" inputBtn="+">+</button><br/>
 
       <button class="btn backspace" value="backspace">CE</button>
-      <button class="btn clear-all" value="clearAll">C</button>
-    </div>`
+      <button class="btn clear-all" value="clearAll">C</button>`
   }
 
 }
