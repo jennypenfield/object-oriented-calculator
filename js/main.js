@@ -14,14 +14,19 @@ let calculator5 = new Calculator('calc5Container')
 
 // calculator objects have the "press" method
 calculator1.press('5')
+console.log( calculator1._numOperArray )
 calculator1.press('+')
+console.log( calculator1._numOperArray )
 calculator1.press('3')
+console.log( calculator1._numOperArray )
 calculator1.press('=')
+console.log( calculator1._numOperArray )
+
 // after this string of commands, the calculator should be showing "8"
 
-// // the .value() method returns a number value after '=' has been pressed
+// the .value() method returns a number value after '=' has been pressed
 console.assert(calculator1.value() === 8)
-// // or null if the calculator is not showing a value currently
+// or null if the calculator is not showing a value currently
 console.assert(calculator2.value() === null)
 
 // A calculator can be in a "locked" state.
@@ -31,17 +36,17 @@ calculator2.lock()
 calculator2.press('9') // this command should do nothing
 console.log(calculator2.value())
 console.assert(calculator2.value() === null)
-// setTimeout(function () {
-//   calculator2.unlock()
-//   calculator2.press('8') // this command should work
-// }, 5000)
+setTimeout(function () {
+  calculator2.unlock()
+  calculator2.press('8') // this command should work
+}, 5000)
 
 // you should be able to pass numbers to the .press() method
 // also there is the .pressButton() method which is an alias of .press()
 // ie: they do the same thing
-// calculator3.press(4)
-// calculator3.pressButton('-')
-//
+calculator3.press(4)
+calculator3.pressButton('-')
+
 // // the .press() method should ignore anything that is not a valid button
 // calculator3.press('45') // this should do nothing
 //

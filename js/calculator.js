@@ -8,137 +8,192 @@ class Calculator {
       window.alert('Not a valid calculator ID. Try again.')
       return null
     }
-    this._$el = $el
-    this._$elId = calculatorId
 
-    this._$el.html(this._renderHTML())
+    this._$el = $el
+    this._elId = calculatorId
+
+    $el.html(this._renderHTML())
     this._numOperArray = []
     this._addEvents()
+
+    this._isLocked = false
+    this._inputNum = ''
+    this._currentValue = null
+
+    this._OPERATORS = ['+', '-', '*', '/', '=']
   }
   // ---------------------------------------------------------------------------
   // Public Methods
   // ---------------------------------------------------------------------------
-  press (calculatorInput) {
-    this.input = calculatorInput
-    if (this.input === 'backspace') {
-      this.backspace()
+
+  press (button) {
+    if (button === 'lock') {
+      this._isLocked = !this._isLocked
+      // TODO: toggle the button from "LOCK" to "UNLOCK" or vice versa
+      this._updateLockBtn()
+      return
     }
-    if (this.input === 'clearAll') {
+
+    if (button === 'backspace') {
+      this.backspace()
+      return
+    }
+    if (button === 'clearAll') {
       this.clearAll()
       this.updateTextField()
+      return
     }
-    if (this.input === '=') {
-      this.updateTextField(this.value())
+    if (button === '=') {
+      this._calculate()
+      this.updateTextField()
+      return
     }
-    this._numOperArray.push(this._getValidInput(this.input))
-    this.updateTextField(this.input)
-  }
+    if (this._OPERATORS.includes(button)) {
+      this._numOperArray.push(button)
+      return
+    }
+    if (this._isValidNumOrDecPt(button)) {
+      if (this._numOperArray.length === 0) {
+        this._numOperArray.push(button + '')
+      } else if (this._numOperArray.length === 1) {
+        this._numOperArray[0] += button
+      } else if (this._numOperArray.length === 2) {
+        this._numOperArray.push(button + '')
+      } else if (this._numOperArray.length === 3) {
+        this._numOperArray[2] += button
+      }
 
-  _getValidInput (calculatorInput) {
-    let validOperators = ['+', '-', '*', '/', '=']
-    let origInput = calculatorInput
-    let input = parseFloat(calculatorInput)
-    if (validOperators.includes(calculatorInput)) {
-      return origInput
+      this.updateTextField()
+      return
     }
-    if (typeof input === 'number') {
-      return input
-    }
-    return
   }
   updateTextField () {
-    $('#' + this._$elId + ' .display').html(this.value())
+    $('#' + this._elId + ' .display').html(this.value())
   }
-
   backspace () {
     this._numOperArray.pop()
-    $('#' + this._$elId + ' .display').html(this._numOperArray)
+    $('#' + this._elId + ' .display').html(this._numOperArray)
   }
-
   clearAll () {
     this._numOperArray = []
     this.value()
   }
-
   displayTotal () {
-    $('#' + this._$elId + ' .display').html(this.value())
+    $('#' + this._elId + ' .display').html(this.value())
+  }
+  value () {
+    // return null if the user has not pressed anything yet
+    if (this._numOperArray.length === 0) return null
+
+    // if there is only one value, return it
+    if (this._numOperArray.length === 1) return parseFloat(this._numOperArray[0])
+
+    // this is not right
+    return parseFloat(this._currentValue)
   }
 
-  value () {
-    console.log('hi')
-    let inputArray = this._numOperArray
-    if (this._numOperArray.length === 0) {
-      return null
+  _calculate () {
+    // make a copy of the input Array
+    let tempArray = []
+    for (let i = 0; i < this._numOperArray.length; i++) {
+      tempArray.push(this._numOperArray[i])
     }
-    if (this._numOperArray.length === 1) {
-      return inputArray[0]
-    }
-    let operator = this._numOperArray[1]
+
+    // _numOperArray is the main array
+    // Copy _numOperArray into tempArray to do math operations since _numOperArray is modified.
+    // Store total in _numOperArray[0]. Splice _numOperArray[1] & _numOperArray[2]
+    let firstNum = parseFloat(tempArray[0])
+    let operator = tempArray[1]
+    let secondNum = parseFloat(tempArray[2])
+
     if (operator === '+') {
-      return this.add(inputArray[0], inputArray[2])
+      this._currentValue = this._add(firstNum, secondNum)
     } else if (operator === '-') {
-      return this.subtract(inputArray[0], inputArray[2])
+      this._currentValue = this._subtract(firstNum, secondNum)
     } else if (operator === '*') {
-      return this.multiply(inputArray[0], inputArray[2])
+      this._currentValue = this._multiply(firstNum, secondNum)
     } else if (operator === '/') {
-      return this.divide(inputArray[0], inputArray[2])
+      this._currentValue = this._divide(firstNum, secondNum)
     }
+    this._numOperArray = [this._currentValue + '']
   }
-  add (numInput1, numInput2) {
-    return numInput1 + numInput2
-  }
-  subtract (numInput1, numInput2) {
-    return numInput1 - numInput2
-  }
-  multiply (numInput1, numInput2) {
-    return numInput1 * numInput2
-  }
-  divide (numInput1, numInput2) {
-    return numInput1 / numInput2
-  }
+
   lock () {
-    $('.btn').prop('disabled', true)
-    // $('.btn').attr('id', 'locked')
+    this._isLocked = true
+    this._$el.addClass('locked')
   }
+
   unlock () {
-    $('btn').prop('disabled', false)
-    $('btn').prop('id', 'null')
+    this._isLocked = false
+    this._$el.removeClass('locked')
   }
+
   // ---------------------------------------------------------------------------
   // Private functions
   // ---------------------------------------------------------------------------
-
+  _updateLockBtn () {
+    if (this._isLocked) {
+      $('#' + this._elId + ' .lock-btn').html('UNLOCK')
+    } else {
+      $('#' + this._elId + ' .lock-btn').html('LOCK')
+    }
+  }
+  _add (numInput1, numInput2) {
+    return numInput1 + numInput2
+  }
+  _subtract (numInput1, numInput2) {
+    return numInput1 - numInput2
+  }
+  _multiply (numInput1, numInput2) {
+    return numInput1 * numInput2
+  }
+  _divide (numInput1, numInput2) {
+    return numInput1 / numInput2
+  }
+  _isValidNumOrDecPt (input) {
+    let numArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    if (numArray.includes(parseFloat(input)) || input === '.') {
+      return true
+    }
+    return false
+  }
   _addEvents () {
-    let thisBtn = this
-    $('#' + this._$elId + ' .btn').click(this.press.bind(thisBtn.inputBtn))
+    let that = this
+    $('#' + this._elId + ' .btn').click(function (evt) {
+      // console.dir(this)
+      var btnVal = evt.target.dataset.btnVal
+      that.press(btnVal)
+    })
   }
   _renderHTML () {
     return `<div class="output-row">
       <div class="answer-field display"></div>
       </div>
-      <button class="btn" inputBtn="7">7</button>
-      <button class="btn" inputBtn="8">8</button>
-      <button class="btn" inputBtn="9">9</button>
-      <button class="btn lighter-green" inputBtn="/">/</button><br/>
+      <button class="btn" data-btn-val="7">7</button>
+      <button class="btn" data-btn-val="8">8</button>
+      <button class="btn" data-btn-val="9">9</button>
+      <button class="btn lighter-green" data-btn-val="/">/</button><br/>
 
-      <button class="btn" inputBtn="4">4</button>
-      <button class="btn" inputBtn="5">5</button>
-      <button class="btn" inputBtn="6">6</button>
-      <button class="btn lighter-green" inputBtn="*">x</button><br/>
+      <button class="btn" data-btn-val="4">4</button>
+      <button class="btn" data-btn-val="5">5</button>
+      <button class="btn" data-btn-val="6">6</button>
+      <button class="btn lighter-green" data-btn-val="*">x</button><br/>
 
-      <button class="btn" inputBtn="1">1</button>
-      <button class="btn" inputBtn="2">2</button>
-      <button class="btn" inputBtn="3">3</button>
-      <button class="btn lighter-green" inputBtn="-">-</button><br/>
+      <button class="btn" data-btn-val="1">1</button>
+      <button class="btn" data-btn-val="2">2</button>
+      <button class="btn" data-btn-val="3">3</button>
+      <button class="btn lighter-green" data-btn-val="-">-</button><br/>
 
-      <button class="btn" inputBtn="0">0</button>
-      <button class="btn" inputBtn=".">.</button>
-      <button class="btn" inputBtn="=">=</button>
-      <button class="btn lighter-green" inputBtn="+">+</button><br/>
+      <button class="btn" data-btn-val="0">0</button>
+      <button class="btn" data-btn-val=".">.</button>
+      <button class="btn" data-btn-val="=">=</button>
+      <button class="btn lighter-green" data-btn-val="+">+</button><br/>
 
-      <button class="btn backspace" value="backspace">CE</button>
-      <button class="btn clear-all" value="clearAll">C</button>`
+      <button class="btn" data-btn-val="backspace">CE</button>
+      <button class="btn lock-btn" data-btn-val="lock">LOCK</button>
+      <button class="btn clear-all" data-btn-val="clearAll">C</button>
+      </div>`
   }
 
-}
+} // end Calculator class
 // !!!!! NO CODE BELOW THIS LINE !!!!!!
