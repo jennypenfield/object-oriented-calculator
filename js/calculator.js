@@ -19,6 +19,7 @@ class Calculator {
     this._isLocked = false
     this._inputNum = ''
     this._currentValue = null
+    this._mustBeOperator = false
 
     this._OPERATORS = ['+', '-', '*', '/', '=']
   }
@@ -37,12 +38,11 @@ class Calculator {
     }
     if (button === 'clearAll') {
       this.clearAll()
-      this.updateTextField()
       return
     }
     if (button === '=') {
       this._calculate()
-      this.updateTextField()
+      this.updateTextField(this.value())
       return
     }
     if (this._OPERATORS.includes(button)) {
@@ -54,33 +54,44 @@ class Calculator {
       return
     }
     if (this._isValidNumOrDecPt(button)) {
+      if (this._mustBeOperator) {
+        this._numOperArray = []
+        this._mustBeOperator = false
+      }
       if (this._numOperArray.length === 0) {
         this._numOperArray.push(button + '')
+        this.updateTextField(button)
       } else if (this._numOperArray.length === 1) {
         this._numOperArray[0] += button
+        this.updateTextField(this._numOperArray[0])
       } else if (this._numOperArray.length === 2) {
         this._numOperArray.push(button + '')
+        this.updateTextField(button + '')
       } else if (this._numOperArray.length === 3) {
         this._numOperArray[2] += button
+        this.updateTextField(this._numOperArray[2])
       }
-
-      this.updateTextField()
       return
     }
   }
   pressButton (button) {
     return this.press(button)
   }
-  updateTextField () {
-    $('#' + this._elId + ' .display').html(this.value())
+  updateTextField (input) {
+    $('#' + this._elId + ' .display').html(input)
   }
   backspace () {
-    this._numOperArray.pop()
-    $('#' + this._elId + ' .display').html(this._numOperArray)
+    // do nothing if nothing has been entered into the calculator
+    if (this._numOperArray.length === 0) return
+    // if the backspace is done on a number
+    let currentIndex = this._numOperArray.length - 1
+    let secondToLastIndex = this._numOperArray[currentIndex].length - 1
+    this._numOperArray[currentIndex] = this._numOperArray[currentIndex].substr(0, secondToLastIndex)
+    $('#' + this._elId + ' .display').html(this._numOperArray[currentIndex])
   }
   clearAll () {
     this._numOperArray = []
-    this.value()
+    this.updateTextField(this.value())
   }
   displayTotal () {
     $('#' + this._elId + ' .display').html(this.value())
@@ -92,7 +103,7 @@ class Calculator {
     // if there is only one value, return it
     if (this._numOperArray.length === 1) return parseFloat(this._numOperArray[0])
 
-    return parseFloat(this._currentValue)
+    return this._currentValue
   }
 
   lock () {
@@ -136,6 +147,7 @@ class Calculator {
       this._currentValue = this._divide(firstNum, secondNum)
     }
     this._numOperArray = [this._currentValue + '']
+    this._mustBeOperator = true
   }
   _updateLockBtn () {
     if (this._isLocked) {
