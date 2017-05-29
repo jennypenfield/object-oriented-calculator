@@ -46,15 +46,16 @@ class Calculator {
       }
       if (button === '=') {
         this._calculate()
-        this.updateTextField(this.value())
         return
       }
       if (this._OPERATORS.includes(button)) {
-        // check for double operators
+        // check for double operators--remove previous if a second operator is entered
         if (this._OPERATORS.includes(this._numOperArray[this._numOperArray.length - 1])) {
-          return
+          this._numOperArray.pop()
+          this._numOperArray.push(button)
         }
         this._numOperArray.push(button)
+        this._mustBeOperator = false
         return
       }
       if (this._isValidNumOrDecPt(button)) {
@@ -138,6 +139,7 @@ class Calculator {
   // Private functions
   // ---------------------------------------------------------------------------
   _calculate () {
+    console.log(this._numOperArray)
     let firstNum = parseFloat(this._numOperArray[0])
     let operator = this._numOperArray[1]
     let secondNum = parseFloat(this._numOperArray[2])
@@ -152,7 +154,9 @@ class Calculator {
       this._currentValue = this._divide(firstNum, secondNum)
     }
     this._numOperArray = [this._currentValue + '']
+    this.updateTextField(this._currentValue)
     this._mustBeOperator = true
+    console.log(this._currentValue)
   }
   _updateLockBtn () {
     if (this._isLocked) {
