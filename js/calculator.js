@@ -115,12 +115,14 @@ class Calculator {
 
   lock () {
     this._isLocked = true
+    this._$el.addClass('locked')
     this._updateLockBtn()
     return
   }
 
   unlock () {
     this._isLocked = false
+    this._$el.removeClass('locked')
     this._updateLockBtn()
     return
   }
@@ -158,10 +160,8 @@ class Calculator {
   _updateLockBtn () {
     if (this._isLocked) {
       $('#' + this._elId + ' .lock-btn').html('UNLOCK')
-      this._$el.addClass('locked')
     } else {
       $('#' + this._elId + ' .lock-btn').html('LOCK')
-      this._$el.removeClass('locked')
     }
   }
   _add (numInput1, numInput2) {
