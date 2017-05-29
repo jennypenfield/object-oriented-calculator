@@ -49,6 +49,7 @@ class Calculator {
         return
       }
       if (this._OPERATORS.includes(button)) {
+        if (this._numOperArray.length === 0) return
         // check for double operators--remove previous if a second operator is entered
         if (this._OPERATORS.includes(this._numOperArray[this._numOperArray.length - 1])) {
           this._numOperArray.pop()
@@ -114,14 +115,12 @@ class Calculator {
 
   lock () {
     this._isLocked = true
-    this._$el.addClass('locked')
     this._updateLockBtn()
     return
   }
 
   unlock () {
     this._isLocked = false
-    this._$el.removeClass('locked')
     this._updateLockBtn()
     return
   }
@@ -139,7 +138,6 @@ class Calculator {
   // Private functions
   // ---------------------------------------------------------------------------
   _calculate () {
-    console.log(this._numOperArray)
     let firstNum = parseFloat(this._numOperArray[0])
     let operator = this._numOperArray[1]
     let secondNum = parseFloat(this._numOperArray[2])
@@ -156,13 +154,14 @@ class Calculator {
     this._numOperArray = [this._currentValue + '']
     this.updateTextField(this._currentValue)
     this._mustBeOperator = true
-    console.log(this._currentValue)
   }
   _updateLockBtn () {
     if (this._isLocked) {
       $('#' + this._elId + ' .lock-btn').html('UNLOCK')
+      this._$el.addClass('locked')
     } else {
       $('#' + this._elId + ' .lock-btn').html('LOCK')
+      this._$el.removeClass('locked')
     }
   }
   _add (numInput1, numInput2) {
