@@ -221,7 +221,7 @@ class Calculator {
       <button class="btn" data-btn-val="=">=</button>
       <button class="btn lighter-green" data-btn-val="+">+</button><br/>
 
-      <button class="btn" data-btn-val="backspace">CE</button>
+      <button class="btn backspace-btn" data-btn-val="backspace">CE</button>
       <button class="btn lock-btn" data-btn-val="lock">LOCK</button>
       <button class="btn clear-all" data-btn-val="clearAll">C</button>
       </div>`

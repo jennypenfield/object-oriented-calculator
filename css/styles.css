@@ -1,7 +1,15 @@
 body {
   background-color: #000;
   margin: 0;
-  text-align: center;
+}
+
+.calc-container {
+    display: inline-block;
+    height: 300px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 30px;
+    width: 300px;
 }
 
 .output-row {
@@ -13,9 +21,6 @@ body {
   font-size: 24px;
   height: 60px;
   margin-bottom: 2px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 100px;
   padding-left: 20px;
   padding-top: 15px;
   text-align: left;
@@ -53,6 +58,10 @@ body {
   background-color: gray;
   color: #000;
   font-size: 10px;
+}
+
+.backspace-btn {
+  border-bottom-left-radius: 10px;
 }
 
 .clear-all {
