@@ -92,7 +92,6 @@ class Calculator {
     // if there is only one value, return it
     if (this._numOperArray.length === 1) return parseFloat(this._numOperArray[0])
 
-    // this is not right
     return parseFloat(this._currentValue)
   }
 
@@ -123,11 +122,6 @@ class Calculator {
   // Private functions
   // ---------------------------------------------------------------------------
   _calculate () {
-    // make a copy of the input Array
-    // let tempArray = []
-    // for (let i = 0; i < this._numOperArray.length; i++) {
-    //   tempArray.push(this._numOperArray[i])
-    // }
     let firstNum = parseFloat(this._numOperArray[0])
     let operator = this._numOperArray[1]
     let secondNum = parseFloat(this._numOperArray[2])
