@@ -27,10 +27,7 @@ class Calculator {
   // ---------------------------------------------------------------------------
 
   press (button) {
-    if (button === 'lock') {
-      this._isLocked = !this._isLocked
-      // TODO: toggle the button from "LOCK" to "UNLOCK" or vice versa
-      this._updateLockBtn()
+    if (this._isLocked) {
       return
     }
 
@@ -49,6 +46,10 @@ class Calculator {
       return
     }
     if (this._OPERATORS.includes(button)) {
+      // check for double operators
+      if (this._OPERATORS.includes(this._numOperArray[this._numOperArray.length - 1])) {
+        return
+      }
       this._numOperArray.push(button)
       return
     }
@@ -66,6 +67,9 @@ class Calculator {
       this.updateTextField()
       return
     }
+  }
+  pressButton (button) {
+    return this.press(button)
   }
   updateTextField () {
     $('#' + this._elId + ' .display').html(this.value())
@@ -92,19 +96,41 @@ class Calculator {
     return parseFloat(this._currentValue)
   }
 
+  lock () {
+    this._isLocked = true
+    this._$el.addClass('locked')
+    this._updateLockBtn()
+    return
+  }
+
+  unlock () {
+    this._isLocked = false
+    this._$el.removeClass('locked')
+    this._updateLockBtn()
+    return
+  }
+  toString () {
+    return this._numOperArray.join(' ')
+  }
+  sayHello () {
+    this._numOperArray = [0.7734]
+  }
+  destroy () {
+    this._$el.remove()
+  }
+
+  // ---------------------------------------------------------------------------
+  // Private functions
+  // ---------------------------------------------------------------------------
   _calculate () {
     // make a copy of the input Array
-    let tempArray = []
-    for (let i = 0; i < this._numOperArray.length; i++) {
-      tempArray.push(this._numOperArray[i])
-    }
-
-    // _numOperArray is the main array
-    // Copy _numOperArray into tempArray to do math operations since _numOperArray is modified.
-    // Store total in _numOperArray[0]. Splice _numOperArray[1] & _numOperArray[2]
-    let firstNum = parseFloat(tempArray[0])
-    let operator = tempArray[1]
-    let secondNum = parseFloat(tempArray[2])
+    // let tempArray = []
+    // for (let i = 0; i < this._numOperArray.length; i++) {
+    //   tempArray.push(this._numOperArray[i])
+    // }
+    let firstNum = parseFloat(this._numOperArray[0])
+    let operator = this._numOperArray[1]
+    let secondNum = parseFloat(this._numOperArray[2])
 
     if (operator === '+') {
       this._currentValue = this._add(firstNum, secondNum)
@@ -117,20 +143,6 @@ class Calculator {
     }
     this._numOperArray = [this._currentValue + '']
   }
-
-  lock () {
-    this._isLocked = true
-    this._$el.addClass('locked')
-  }
-
-  unlock () {
-    this._isLocked = false
-    this._$el.removeClass('locked')
-  }
-
-  // ---------------------------------------------------------------------------
-  // Private functions
-  // ---------------------------------------------------------------------------
   _updateLockBtn () {
     if (this._isLocked) {
       $('#' + this._elId + ' .lock-btn').html('UNLOCK')
@@ -152,7 +164,17 @@ class Calculator {
   }
   _isValidNumOrDecPt (input) {
     let numArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    if (numArray.includes(parseFloat(input)) || input === '.') {
+    if (input === '.') {
+      if (this._numOperArray.length === 0 || this._numOperArray.length === 2) {
+        return true
+      } else {
+        let currentIndex = this._numOperArray.length - 1
+        if (this._numOperArray[currentIndex].substr(this._numOperArray[currentIndex].length - 1) === '.') {
+          return false
+        } else return true
+      }
+    }
+    if (numArray.includes(parseInt(input))) {
       return true
     }
     return false
@@ -160,7 +182,6 @@ class Calculator {
   _addEvents () {
     let that = this
     $('#' + this._elId + ' .btn').click(function (evt) {
-      // console.dir(this)
       var btnVal = evt.target.dataset.btnVal
       that.press(btnVal)
     })

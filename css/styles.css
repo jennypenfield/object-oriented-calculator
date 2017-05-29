@@ -52,7 +52,7 @@ body {
 .calc-container.locked .btn {
   background-color: gray;
   color: #000;
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .clear-all {

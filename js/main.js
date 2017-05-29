@@ -14,13 +14,9 @@ let calculator5 = new Calculator('calc5Container')
 
 // calculator objects have the "press" method
 calculator1.press('5')
-console.log( calculator1._numOperArray )
 calculator1.press('+')
-console.log( calculator1._numOperArray )
 calculator1.press('3')
-console.log( calculator1._numOperArray )
 calculator1.press('=')
-console.log( calculator1._numOperArray )
 
 // after this string of commands, the calculator should be showing "8"
 
@@ -34,7 +30,6 @@ console.assert(calculator2.value() === null)
 // The "locked" state should look visually disabled.
 calculator2.lock()
 calculator2.press('9') // this command should do nothing
-console.log(calculator2.value())
 console.assert(calculator2.value() === null)
 setTimeout(function () {
   calculator2.unlock()
@@ -47,34 +42,34 @@ setTimeout(function () {
 calculator3.press(4)
 calculator3.pressButton('-')
 
-// // the .press() method should ignore anything that is not a valid button
-// calculator3.press('45') // this should do nothing
-//
-// // the calculator should have a .toString() method that returns what is showing
-// // on the screen
-// console.assert(calculator3.toString() === '4 -')
-//
-// // there should be an Easter Egg method called .sayHello() that clears whatever
-// // is on the screen and sets it to "0.7734" (hello upside down)
-// // Note: the calculator should work after this is called, for example:
-// calculator4.press('3')
-// calculator4.press('+')
-// calculator4.sayHello()
-// calculator4.press('+')
-// calculator4.press('1')
-// calculator4.press('=')
-// console.assert(calculator4.value() === 1.7734)
-//
-// // calculators can be completely removed from the DOM after calling the .destroy()
-// // method
-// setTimeout(calculator3.destroy, 8 * 1000)
-//
-// // the calculator should ignore any input that does not make sense
-// // ie: just like a real calculator
-// calculator5.press('3')
-// calculator5.press('.')
-// calculator5.press('.')
-// calculator5.press('2')
-// calculator5.press('+')
-// calculator5.press('7')
-// console.assert(calculator5.toString() === '3.2 + 7')
+// the .press() method should ignore anything that is not a valid button
+calculator3.press('45') // this should do nothing
+
+// the calculator should have a .toString() method that returns what is showing
+// on the screen
+console.assert(calculator3.toString() === '4 -')
+
+// there should be an Easter Egg method called .sayHello() that clears whatever
+// is on the screen and sets it to "0.7734" (hello upside down)
+// Note: the calculator should work after this is called, for example:
+calculator4.press('3')
+calculator4.press('+')
+calculator4.sayHello()
+calculator4.press('+')
+calculator4.press('1')
+calculator4.press('=')
+console.assert(calculator4.value() === 1.7734)
+
+// calculators can be completely removed from the DOM after calling the .destroy()
+// method
+setTimeout(calculator3.destroy(), 8 * 1000)
+
+// the calculator should ignore any input that does not make sense
+// ie: just like a real calculator
+calculator5.press('3')
+calculator5.press('.')
+calculator5.press('.')
+calculator5.press('2')
+calculator5.press('+')
+calculator5.press('7')
+console.assert(calculator5.toString() === '3.2 + 7')
