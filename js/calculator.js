@@ -28,50 +28,55 @@ class Calculator {
   // ---------------------------------------------------------------------------
 
   press (button) {
-    if (this._isLocked) {
-      return
+    if (button === 'lock') {
+      if (this._isLocked) {
+        this.unlock()
+      } else {
+        this.lock()
+      }
     }
-
-    if (button === 'backspace') {
-      this.backspace()
-      return
-    }
-    if (button === 'clearAll') {
-      this.clearAll()
-      return
-    }
-    if (button === '=') {
-      this._calculate()
-      this.updateTextField(this.value())
-      return
-    }
-    if (this._OPERATORS.includes(button)) {
-      // check for double operators
-      if (this._OPERATORS.includes(this._numOperArray[this._numOperArray.length - 1])) {
+    if (!this._isLocked) {
+      if (button === 'backspace') {
+        this.backspace()
         return
       }
-      this._numOperArray.push(button)
-      return
-    }
-    if (this._isValidNumOrDecPt(button)) {
-      if (this._mustBeOperator) {
-        this._numOperArray = []
-        this._mustBeOperator = false
+      if (button === 'clearAll') {
+        this.clearAll()
+        return
       }
-      if (this._numOperArray.length === 0) {
-        this._numOperArray.push(button + '')
-        this.updateTextField(button)
-      } else if (this._numOperArray.length === 1) {
-        this._numOperArray[0] += button
-        this.updateTextField(this._numOperArray[0])
-      } else if (this._numOperArray.length === 2) {
-        this._numOperArray.push(button + '')
-        this.updateTextField(button + '')
-      } else if (this._numOperArray.length === 3) {
-        this._numOperArray[2] += button
-        this.updateTextField(this._numOperArray[2])
+      if (button === '=') {
+        this._calculate()
+        this.updateTextField(this.value())
+        return
       }
-      return
+      if (this._OPERATORS.includes(button)) {
+        // check for double operators
+        if (this._OPERATORS.includes(this._numOperArray[this._numOperArray.length - 1])) {
+          return
+        }
+        this._numOperArray.push(button)
+        return
+      }
+      if (this._isValidNumOrDecPt(button)) {
+        if (this._mustBeOperator) {
+          this._numOperArray = []
+          this._mustBeOperator = false
+        }
+        if (this._numOperArray.length === 0) {
+          this._numOperArray.push(button + '')
+          this.updateTextField(button)
+        } else if (this._numOperArray.length === 1) {
+          this._numOperArray[0] += button
+          this.updateTextField(this._numOperArray[0])
+        } else if (this._numOperArray.length === 2) {
+          this._numOperArray.push(button + '')
+          this.updateTextField(button + '')
+        } else if (this._numOperArray.length === 3) {
+          this._numOperArray[2] += button
+          this.updateTextField(this._numOperArray[2])
+        }
+        return
+      }
     }
   }
   pressButton (button) {
@@ -217,7 +222,7 @@ class Calculator {
       <button class="btn lighter-green" data-btn-val="+">+</button><br/>
 
       <button class="btn" data-btn-val="backspace">CE</button>
-      <button class="btn" data-btn-val="lock">LOCK</button>
+      <button class="btn lock-btn" data-btn-val="lock">LOCK</button>
       <button class="btn clear-all" data-btn-val="clearAll">C</button>
       </div>`
   }
