@@ -83,10 +83,10 @@ class Calculator {
   backspace () {
     // do nothing if nothing has been entered into the calculator
     if (this._numOperArray.length === 0) return
-    // if the backspace is done on a number
     let currentIndex = this._numOperArray.length - 1
-    let secondToLastIndex = this._numOperArray[currentIndex].length - 1
-    this._numOperArray[currentIndex] = this._numOperArray[currentIndex].substr(0, secondToLastIndex)
+    // get length of string minus one for the substr method
+    let substrLength = this._numOperArray[currentIndex].length - 1
+    this._numOperArray[currentIndex] = this._numOperArray[currentIndex].substr(0, substrLength)
     $('#' + this._elId + ' .display').html(this._numOperArray[currentIndex])
   }
   clearAll () {
@@ -188,7 +188,7 @@ class Calculator {
   _addEvents () {
     let that = this
     $('#' + this._elId + ' .btn').click(function (evt) {
-      var btnVal = evt.target.dataset.btnVal
+      let btnVal = evt.target.dataset.btnVal
       that.press(btnVal)
     })
   }
@@ -217,7 +217,7 @@ class Calculator {
       <button class="btn lighter-green" data-btn-val="+">+</button><br/>
 
       <button class="btn" data-btn-val="backspace">CE</button>
-      <button class="btn lock-btn" data-btn-val="lock">LOCK</button>
+      <button class="btn" data-btn-val="lock">LOCK</button>
       <button class="btn clear-all" data-btn-val="clearAll">C</button>
       </div>`
   }
